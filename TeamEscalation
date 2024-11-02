@@ -1,0 +1,54 @@
+function toggleAddressLine3(executionContext) {
+    var formContext = executionContext.getFormContext();
+    
+    // Vérifier si tanios_escalate est "Yes" (ou true)
+    var EscalateQuestion = formContext.getAttribute("tanios_escalate").getValue();
+    
+    if (EscalateQuestion === true) {
+        // Afficher tanios_teamstoescalate
+        formContext.getControl("tanios_teamstoescalate").setVisible(true);  
+        
+        // Récupérer la valeur du champ multiselect tanios_teamstoescalate
+        var selectedTeams = formContext.getAttribute("tanios_teamstoescalate").getValue();
+        
+        // Masquer tous les champs de priorité par défaut
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("dev_section").setVisible(false);
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("sales_section").setVisible(false);
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("admin_section").setVisible(false);
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("support_section").setVisible(false);
+
+        // Vérifier les équipes sélectionnées et afficher les champs de priorité correspondants
+        if (selectedTeams && selectedTeams.length > 0) {
+            selectedTeams.forEach(function (team) {
+                switch (team) {
+                    case 733640000: // Code pour "Dev"
+                        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("dev_section").setVisible(true);
+                        break;
+                    case 733640001: // Code pour "Sales"
+                        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("sales_section").setVisible(true);
+                        break;
+                    case 733640002: // Code pour "Admin"
+                        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("admin_section").setVisible(true);
+                        break;
+                    case 733640003: // Code pour "Support"
+                        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("support_section").setVisible(true);
+                        break;
+                }
+            });
+        } else {
+            // Si aucune équipe n'est sélectionnée, masquer toutes les sections
+            formContext.ui.tabs.get("SUMMARY_TAB").sections.get("dev_section").setVisible(false);
+            formContext.ui.tabs.get("SUMMARY_TAB").sections.get("sales_section").setVisible(false);
+            formContext.ui.tabs.get("SUMMARY_TAB").sections.get("admin_section").setVisible(false);
+            formContext.ui.tabs.get("SUMMARY_TAB").sections.get("support_section").setVisible(false);
+        }
+    } else {
+        // Masquer tanios_teamstoescalate et tous les champs de priorité si tanios_escalate n'est pas "Yes"
+        formContext.getControl("tanios_teamstoescalate").setVisible(false);
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("dev_section").setVisible(false);
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("sales_section").setVisible(false);
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("admin_section").setVisible(false);
+        formContext.ui.tabs.get("SUMMARY_TAB").sections.get("support_section").setVisible(false);
+    }
+}
+
