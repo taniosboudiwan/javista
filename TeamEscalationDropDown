@@ -1,0 +1,24 @@
+function onSaveCheckDuplicates(executionContext) {
+    const formContext = executionContext.getFormContext();
+
+    // Retrieve values as arrays from each dropdown field
+    const devTeam = formContext.getAttribute("cr69f_dev_team").getValue() || [];
+    const adminTeam = formContext.getAttribute("cr69f_admin_team").getValue() || [];
+    const salesTeam = formContext.getAttribute("cr69f_sales_team").getValue() || [];
+    const supportTeam = formContext.getAttribute("cr69f_support_team").getValue() || [];
+
+    // Combine all selected values into a single array
+    const selectedTeams = [...devTeam, ...adminTeam, ...salesTeam, ...supportTeam];
+
+    // Check for duplicates by creating a Set from the combined array
+    const uniqueTeams = new Set(selectedTeams);
+    
+    if (uniqueTeams.size < selectedTeams.length) {
+        // If duplicates are found, prevent save and show an error notification
+        formContext.ui.setFormNotification("Duplicate teams selected. Please choose unique values.", "ERROR", "duplicateTeamsError");
+        executionContext.getEventArgs().preventDefault(); // Prevents the save operation
+    } else {
+        // Clear any existing notification if there are no duplicates
+        formContext.ui.clearFormNotification("duplicateTeamsError");
+    }
+}
